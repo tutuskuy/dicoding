@@ -44,7 +44,7 @@ def create_temp_df(df):
 
 
 # Load cleaned data
-day1_df = pd.read_csv("day1.csv")
+day1_df = pd.read_csv("dashboard/day1.csv")
 hour1_df = pd.read_csv('hour1.csv')
 
 day1_df['dteday'] = pd.to_datetime(day1_df['dteday'])
