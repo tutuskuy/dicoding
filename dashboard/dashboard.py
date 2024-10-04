@@ -1,7 +1,3 @@
-pip install matplotlib==3.7.1
-pip install seaborn==0.12.2
-pip install streamlit.babel
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
