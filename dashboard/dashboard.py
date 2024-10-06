@@ -11,36 +11,36 @@ sns.set(style='dark')
 
 def create_casual_df(df):
     
-	casual_df = df[['dteday', 'casual']]   
+	casual_df = df[['dteday', 'casual', 'cluster']]   
 	return casual_df
 
 def create_registered_df(df):
     
-	registered_df = df[['dteday', 'registered']]   
+	registered_df = df[['dteday', 'registered', 'cluster']]   
 	return registered_df
 
 def create_cnt_df(df):
     
-	cnt_df = df[['dteday', 'cnt']]    
+	cnt_df = df[['dteday', 'cnt', 'cluster']]    
 	return cnt_df
 
 def create_casualhour_df(df):
     
-	casualhour_df = df[['dteday', 'hr', 'casual']]
+	casualhour_df = df[['dteday', 'hr', 'casual', 'cluster']]
 	return casualhour_df
 
 def create_registeredhour_df(df):
     
-	registeredhour_df = df[['dteday', 'hr', 'registered']]
+	registeredhour_df = df[['dteday', 'hr', 'registered', 'cluster']]
 	return registeredhour_df
 
 def create_cnthour_df(df):
     
-	cnthour_df = df[['dteday', 'hr', 'cnt']]    
+	cnthour_df = df[['dteday', 'hr', 'cnt', 'cluster']]    
 	return cnthour_df
 
 def create_temp_df(df):
-	temp_df = df[['temp', 'casual', 'registered', 'cnt']]
+	temp_df = df[['temp', 'hum', 'windspeed', 'casual', 'registered', 'cnt', 'cluster']]
 	return temp_df
 
 
@@ -81,14 +81,28 @@ mainhour_df = hour1_df[(hour1_df["dteday"] >= str(start_date)) &
 # st.dataframe(main_df)
 
 # # Menyiapkan berbagai dataframe
+
+# df untuk casual users
 casual_df = create_casual_df(main_df)
+
+# df untuk registered users
 registered_df = create_registered_df(main_df)
+
+# df untuk total users
 cnt_df = create_cnt_df(main_df)
 
+
+# df untuk casual users setiap jamnya
 casualhour_df = create_casualhour_df(mainhour_df)
+
+# df untuk registered users setiap jamnya
 registeredhour_df = create_registeredhour_df(mainhour_df)
+
+# df untuk total users setiap jamnya
 cnthour_df = create_cnthour_df(mainhour_df)
 
+
+# df untuk suhu setiap harinya
 temp_df = create_temp_df(main_df)
 
 
@@ -169,6 +183,44 @@ st.pyplot(fig1)
 st.pyplot(fig2)
 st.pyplot(fig3)
 
+
+
+# Clustering user setiap harinya
+
+st.subheader('Clustering User Terhadap Hari')
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Subplot 1: date vs casual
+sns.scatterplot(x='dteday', y='casual', hue='cluster', data=casual_df, palette='viridis', ax=axes[0])
+axes[0].set_title('Clustering Casual Users Terhadap Hari')
+axes[0].set_xlabel('Date')
+axes[0].set_ylabel('Casual Users')
+
+# Subplot 2: date vs registered
+sns.scatterplot(x='dteday', y='registered', hue='cluster', data=registered_df, palette='viridis', ax=axes[1])
+axes[1].set_title('Clustering Registered Users Terhadap Hari')
+axes[1].set_xlabel('Date')
+axes[1].set_ylabel('Registered Users')
+
+# Subplot 3: date vs cnt
+sns.scatterplot(x='dteday', y='cnt', hue='cluster', data=cnt_df, palette='viridis', ax=axes[2])
+axes[2].set_title('Clustering Total Users Terhadap Hari')
+axes[2].set_xlabel('Date')
+axes[2].set_ylabel('Total Users')
+
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
+max_ylim = max(ax.get_ylim()[1] for ax in axes)
+for ax in axes:
+  ax.set_ylim(top=max_ylim)
+
+# Display the plot ke streamlit
+st.pyplot(fig)
+
+
+
 # Average users
 st.subheader("Rata-Rata User Setiap Jam")
 
@@ -193,11 +245,53 @@ axes[2].set_title('Average Total Users per Hour')
 axes[2].set_xlabel('Hour')
 axes[2].set_ylabel('Average Total Users')
 
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
 max_ylim = max(ax.get_ylim()[1] for ax in axes)
 for ax in axes:
   ax.set_ylim(top=max_ylim)
 
 st.pyplot(fig)
+
+
+
+
+# Clustering user setiap jamnya
+
+st.subheader('Clustering User Terhadap Jam')
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Subplot 1: hr vs casual
+sns.scatterplot(x='hr', y='casual', hue='cluster', data=casualhour_df, palette='viridis', ax=axes[0])
+axes[0].set_title('Clustering Casual Users Terhadap Jam')
+axes[0].set_xlabel('Hour')
+axes[0].set_ylabel('Casual Users')
+
+# Subplot 2: hr vs registered
+sns.scatterplot(x='hr', y='registered', hue='cluster', data=registeredhour_df, palette='viridis', ax=axes[1])
+axes[1].set_title('Clustering Registered Users Terhadap Jam')
+axes[1].set_xlabel('Hour')
+axes[1].set_ylabel('Registered Users')
+
+# Subplot 3: hr vs cnt
+sns.scatterplot(x='hr', y='cnt', hue='cluster', data=cnthour_df, palette='viridis', ax=axes[2])
+axes[2].set_title('Clustering Total Users Terhadap Jam')
+axes[2].set_xlabel('Hour')
+axes[2].set_ylabel('Total Users')
+
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
+max_ylim = max(ax.get_ylim()[1] for ax in axes)
+for ax in axes:
+  ax.set_ylim(top=max_ylim)
+
+# Display the plot ke streamlit
+st.pyplot(fig)
+
+
 
 # Temperature
 st.subheader("Pengaruh Suhu Terhadap Jumlah Users")
@@ -228,11 +322,122 @@ axes[2].set_xlabel('Temperature Bins')
 axes[2].set_ylabel('Sum of Total Users')
 axes[2].tick_params(axis='x', rotation=45)
 
-plt.tight_layout()
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
 max_ylim = max(ax.get_ylim()[1] for ax in axes)
 for ax in axes:
   ax.set_ylim(top=max_ylim)
 
+# Display the plot ke streamlit
 st.pyplot(fig)
+
+
+
+
+# Clustering user terhadap temperatur
+st.subheader('Clustering User Terhadap Temperatur')
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Subplot 1: temp vs casual
+sns.scatterplot(x='temp', y='casual', hue='cluster', data=temp_df, palette='viridis', ax=axes[0])
+axes[0].set_title('Clustering Casual Users Terhadap Temperatur')
+axes[0].set_xlabel('Temperature')
+axes[0].set_ylabel('Casual Users')
+
+# Subplot 2: temp vs registered
+sns.scatterplot(x='temp', y='registered', hue='cluster', data=temp_df, palette='viridis', ax=axes[1])
+axes[1].set_title('Clustering Registered Users Terhadap Temperatur')
+axes[1].set_xlabel('Temperature')
+axes[1].set_ylabel('Registered Users')
+
+# Subplot 3: temp vs cnt
+sns.scatterplot(x='temp', y='cnt', hue='cluster', data=temp_df, palette='viridis', ax=axes[2])
+axes[2].set_title('Clustering Total Users Terhadap Temperatur')
+axes[2].set_xlabel('Temperature')
+axes[2].set_ylabel('Total Users')
+
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
+max_ylim = max(ax.get_ylim()[1] for ax in axes)
+for ax in axes:
+  ax.set_ylim(top=max_ylim)
+
+# Display the plot ke streamlit
+st.pyplot(fig)
+
+
+
+
+# Clustering user terhadap kelembapan
+st.subheader('Clustering User Terhadap Kelembapan')
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Subplot 1: hum vs casual
+sns.scatterplot(x='hum', y='casual', hue='cluster', data=temp_df, palette='viridis', ax=axes[0])
+axes[0].set_title('Clustering Casual Users Terhadap Temperatur')
+axes[0].set_xlabel('Humidity')
+axes[0].set_ylabel('Casual Users')
+
+# Subplot 2: hum vs registered
+sns.scatterplot(x='hum', y='registered', hue='cluster', data=temp_df, palette='viridis', ax=axes[1])
+axes[1].set_title('Clustering Registered Users Terhadap Temperatur')
+axes[1].set_xlabel('Humidity')
+axes[1].set_ylabel('Registered Users')
+
+# Subplot 3: hum vs cnt
+sns.scatterplot(x='hum', y='cnt', hue='cluster', data=temp_df, palette='viridis', ax=axes[2])
+axes[2].set_title('Clustering Total Users Terhadap Temperatur')
+axes[2].set_xlabel('Humidity')
+axes[2].set_ylabel('Total Users')
+
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
+max_ylim = max(ax.get_ylim()[1] for ax in axes)
+for ax in axes:
+  ax.set_ylim(top=max_ylim)
+
+# Display the plot ke streamlit
+st.pyplot(fig)
+
+
+
+# Clustering user terhadap kecepatan udara
+st.subheader('Clustering User Terhadap Kecepatan Angin')
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+
+# Subplot 1: windspeed vs casual
+sns.scatterplot(x='windspeed', y='casual', hue='cluster', data=temp_df, palette='viridis', ax=axes[0])
+axes[0].set_title('Clustering Casual Users Terhadap Kecepatan Angin')
+axes[0].set_xlabel('Humidity')
+axes[0].set_ylabel('Casual Users')
+
+# Subplot 2: windspeed vs registered
+sns.scatterplot(x='windspeed', y='registered', hue='cluster', data=temp_df, palette='viridis', ax=axes[1])
+axes[1].set_title('Clustering Registered Users Terhadap Kecepatan Angin')
+axes[1].set_xlabel('Humidity')
+axes[1].set_ylabel('Registered Users')
+
+# Subplot 3: windspeed vs cnt
+sns.scatterplot(x='windspeed', y='cnt', hue='cluster', data=temp_df, palette='viridis', ax=axes[2])
+axes[2].set_title('Clustering Total Users Terhadap Kecepatan Angin')
+axes[2].set_xlabel('Humidity')
+axes[2].set_ylabel('Total Users')
+
+plt.tight_layout() # untuk memberi jarak antar grafik
+
+# untuk menyamakan y limit agar terlihat secara jelas mana yang lebih banyak
+max_ylim = max(ax.get_ylim()[1] for ax in axes)
+for ax in axes:
+  ax.set_ylim(top=max_ylim)
+
+# Display the plot ke streamlit
+st.pyplot(fig)
+
 
 st.caption('By Christoforus Stanislaus')
