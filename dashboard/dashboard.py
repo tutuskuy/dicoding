@@ -48,8 +48,8 @@ def create_temp_df(df):
 day1_df = Path(__file__).parents[1]/"dashboard/day1.csv"
 hour1_df = Path(__file__).parents[1]/'dashboard/hour1.csv'
 
-#day1_df['dteday'] = pd.to_datetime(day1_df['dteday'])
-#hour1_df['dteday'] = pd.to_datetime(hour1_df['dteday'])
+day1_df['dteday'] = pd.to_datetime(day1_df['dteday'], errors='coerce')
+hour1_df['dteday'] = pd.to_datetime(hour1_df['dteday'], errors='coerce')
 
 # Filter data
 min_date = day1_df["dteday"].min()
