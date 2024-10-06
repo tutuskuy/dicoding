@@ -48,6 +48,9 @@ def create_temp_df(df):
 day1_df = Path(__file__).parents[1]/"dashboard/day1.csv"
 hour1_df = Path(__file__).parents[1]/'dashboard/hour1.csv'
 
+day1_df = pd.read_csv(day1_df)
+hour1_df = pd.read_csv(hour1_df)
+
 day1_df['dteday'] = pd.to_datetime(day1_df['dteday'], format='%Y-%m-%d', errors='coerce')
 hour1_df['dteday'] = pd.to_datetime(hour1_df['dteday'], format='%Y-%m-%d', errors='coerce')
 
